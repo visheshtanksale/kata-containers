@@ -136,6 +136,8 @@ const (
 
 	// SpaprTPMProxy is used for enabling guest to run in secure mode on ppc64le.
 	SpaprTPMProxy DeviceDriver = "spapr-tpm-proxy"
+
+	TPMDriver = "tpm-tis"
 )
 
 func isDimmSupported(config *Config) bool {
@@ -1796,6 +1798,37 @@ func (b PCIeSwitchDownstreamPortDevice) Valid() bool {
 	return true
 }
 
+type TPMDevice struct {
+
+	// DeviceID specifies device id
+	DeviceID string
+
+	Driver DeviceDriver
+
+	TpmDev string
+}
+
+func (tpmDev TPMDevice) Valid() bool {
+	return true
+}
+
+func (tpmDev TPMDevice) QemuParams(config *Config) []string {
+	var qemuParams []string
+	var deviceParams []string
+	var tpmdevParams []string
+
+	deviceParams = append(deviceParams, fmt.Sprintf("%s,tpmdev=%s,id=%s", tpmDev.Driver, tpmDev.TpmDev, tpmDev.DeviceID))
+
+	qemuParams = append(qemuParams, "-device")
+	qemuParams = append(qemuParams, strings.Join(deviceParams, ","))
+
+	tpmdevParams = append(tpmdevParams, fmt.Sprintf("emulator,id=%s,chardev=chrtpm", tpmDev.DeviceID))
+
+	qemuParams = append(qemuParams, "-tpmdev")
+	qemuParams = append(qemuParams, strings.Join(tpmdevParams, ","))
+	return qemuParams
+}
+
 // VFIODevice represents a qemu vfio device meant for direct access by guest OS.
 type VFIODevice struct {
 	// Bus-Device-Function of device
@@ -2571,6 +2604,16 @@ type FwCfg struct {
 	Name string
 	File string
 	Str  string
+}
+
+type TPM struct {
+	Model   string
+	Backend TPMBackend
+}
+
+type TPMBackend struct {
+	Type    string
+	Version string
 }
 
 // Valid returns true if the FwCfg structure is valid and complete.

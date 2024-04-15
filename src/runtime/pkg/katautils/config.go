@@ -160,6 +160,7 @@ type hypervisor struct {
 	DisableGuestSeLinux            bool                      `toml:"disable_guest_selinux"`
 	LegacySerial                   bool                      `toml:"use_legacy_serial"`
 	ExtraMonitorSocket             govmmQemu.MonitorProtocol `toml:"extra_monitor_socket"`
+	EnableTPM                      bool                      `toml:"enable_tpm"`
 }
 
 type runtime struct {
