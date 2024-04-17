@@ -1804,8 +1804,6 @@ type TPMDevice struct {
 	DeviceID string
 
 	Driver DeviceDriver
-
-	TpmDev string
 }
 
 func (tpmDev TPMDevice) Valid() bool {
@@ -1815,6 +1813,7 @@ func (tpmDev TPMDevice) Valid() bool {
 func (tpmDev TPMDevice) QemuParams(config *Config) []string {
 	var qemuParams []string
 	var deviceParams []string
+	var charDeviceParams []string
 	var tpmdevParams []string
 
 	deviceParams = append(deviceParams, fmt.Sprintf("%s,tpmdev=%s", tpmDev.Driver, tpmDev.DeviceID))
@@ -1826,6 +1825,11 @@ func (tpmDev TPMDevice) QemuParams(config *Config) []string {
 
 	qemuParams = append(qemuParams, "-tpmdev")
 	qemuParams = append(qemuParams, strings.Join(tpmdevParams, ","))
+
+	charDeviceParams = append(charDeviceParams, fmt.Sprintf("socket,id=chrtpm,path=/tmp/emulated_tpm/swtpm-sock"))
+	qemuParams = append(qemuParams, "-chardev")
+	qemuParams = append(qemuParams, strings.Join(charDeviceParams, ","))
+
 	return qemuParams
 }
 
