@@ -1817,7 +1817,7 @@ func (tpmDev TPMDevice) QemuParams(config *Config) []string {
 	var deviceParams []string
 	var tpmdevParams []string
 
-	deviceParams = append(deviceParams, fmt.Sprintf("%s,tpmdev=%s,id=%s", tpmDev.Driver, tpmDev.TpmDev, tpmDev.DeviceID))
+	deviceParams = append(deviceParams, fmt.Sprintf("%s,tpmdev=%s", tpmDev.Driver, tpmDev.DeviceID))
 
 	qemuParams = append(qemuParams, "-device")
 	qemuParams = append(qemuParams, strings.Join(deviceParams, ","))

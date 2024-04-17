@@ -456,7 +456,7 @@ func (q *qemu) buildDevices(ctx context.Context, kernelPath string) ([]govmmQemu
 		govmmQemu.TPMDevice{DeviceID: "tpm0", TpmDev: "tpm-tmp0", Driver: govmmQemu.TPMDriver},
 	)
 	devices = append(devices,
-		govmmQemu.CharDevice{Backend: govmmQemu.Socket, DeviceID: "chrtpm", ID: "chrtpm", Path: "/run/my-vm/mytpm0/swtpm-sock"},
+		govmmQemu.CharDevice{Backend: govmmQemu.Socket, DeviceID: "chrtpm", Path: "/tmp/emulated_tpm/swtpm-sock"},
 	)
 
 	return devices, ioThread, kernel, nil
